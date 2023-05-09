@@ -18,7 +18,8 @@ export default defineConfig({
       '@components': '/src/components',
       '@pages': '/src/pages',
       '@theme': '/src/theme',
-      '@lib': '/src/lib'
+      '@lib': '/src/lib',
+      '@assets': '/src/assets'
     }
   }
 })
