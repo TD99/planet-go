@@ -1,6 +1,12 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+/** Fonts **/
+@font-face {
+  font-family: 'Fast Hand';
+  src: url('../assets/fonts/FastHand.ttf')
+}
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
