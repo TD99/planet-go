@@ -1,0 +1,30 @@
+h1, h2, h3, h4, h5, h6,
+p, span, a,
+em, strong, small,
+mark, del, ins,
+sub, sup,
+img {
+  -webkit-user-select: none; /* Chrome, Safari, Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none;
+}
+
+img {
+    -webkit-user-drag: none; /* Chrome, Safari, Opera */
+    -moz-user-drag: none; /* Firefox */
+    -ms-user-drag: none; /* IE/Edge */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.rounded {
+  border-radius: 5px;
+}
+
+:is(ion-img).rounded {
+  overflow: hidden;
+}

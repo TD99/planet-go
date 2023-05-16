@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "antfu.vite",
+        "ionic.ionic",
+        "dbaeumer.vscode-eslint",
+        "ms-vsliveshare.vsliveshare",
+        "PKief.material-icon-theme"
+    ]
+}

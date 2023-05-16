@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">planetgo</string>
+    <string name="title_activity_main">planetgo</string>
+    <string name="package_name">ionic.planetgo</string>
+    <string name="custom_url_scheme">ionic.planetgo</string>
+</resources>
