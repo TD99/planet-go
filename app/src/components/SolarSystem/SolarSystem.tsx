@@ -1,13 +1,8 @@
 import { Circle } from "react-leaflet";
 import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
+import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
 
-function kmToLatLong(km: number, lat: number) {
-  const earthRadius = 6371; // Earth's radius in km
-  const deltaLat = (km / earthRadius) * (180 / Math.PI);
-  const deltaLong = km / (111.32 * Math.cos((lat * Math.PI) / 180));
-  return { lat: deltaLat, long: deltaLong };
-}
 interface Planet {
   name: string;
   orbitRadius: number;
@@ -29,12 +24,17 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   useEffect(() => {
     async function fetchPlanets() {
       const data = await getSolarSystemData();
+      const planetPositions = getPlanetPositions(new Date(2022, 2, 1), data);
       const planetsData = data.bodies.filter((body: any) => body.isPlanet);
       const planets = planetsData.map((planet: any) => ({
         name: planet.englishName,
         orbitRadius: planet.semimajorAxis,
-        angle: 0, // TODO: calculate real angle
-        radius: planet.meanRadius * 1e6,
+        angle:
+          (planetPositions.filter((p) => p.name === planet.englishName)[0]
+            .theta *
+            180) /
+          Math.PI,
+        radius: planet.meanRadius * 3e6,
       }));
       setPlanets(planets);
     }
@@ -67,6 +67,11 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
               center={[x, y]}
               radius={planet.radius * scale}
               fillOpacity={1}
+              eventHandlers={{
+                click: () => {
+                  console.log(planet.name);
+                },
+              }}
             />
           </>
         );

@@ -21,26 +21,6 @@ const locationIcon = icon({
   className: "custom-marker-icon",
 });
 
-const planets = [
-  { name: "Mercury", orbitRadius: 57909050, angle: 0 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 45 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 90 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 135 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 180 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 225 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 270 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 315 },
-  { name: "Mercury", orbitRadius: 57909050, angle: 360 },
-
-  { name: "Venus", orbitRadius: 108208000, angle: 0 },
-  { name: "Earth", orbitRadius: 149598023, angle: 0 },
-  { name: "Mars", orbitRadius: 227939200, angle: 0 },
-  { name: "Jupiter", orbitRadius: 778547200, angle: 0 },
-  { name: "Saturn", orbitRadius: 1433449370, angle: 0 },
-  { name: "Uranus", orbitRadius: 2876679082, angle: 0 },
-  { name: "Neptune", orbitRadius: 4503443661, angle: 0 },
-];
-
 const scale = 1e-9; // scale factor to adjust the size of the orbits
 
 const Map = () => {
