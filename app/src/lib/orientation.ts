@@ -8,7 +8,7 @@ export function getOrientation() {
     return orientation;
 }
 
-export function onHeadingChange(event:any) {
+export function onHeadingChange(event: any) {
   var heading = event.alpha;
 
   if (typeof event.webkitCompassHeading !== "undefined") {

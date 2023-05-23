@@ -21,7 +21,8 @@ export default defineConfig({
       '@theme': '/src/theme',
       '@lib': '/src/lib',
       '@assets': '/src/assets',
-      '@core': '/src/core'
+      '@core': '/src/core',
+      '@types': '/src/types'
     }
   }
 })
