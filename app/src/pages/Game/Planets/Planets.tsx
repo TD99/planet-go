@@ -11,7 +11,7 @@ import {
 import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { planetData } from "@src/data/planetData";
+import { planetsData } from "@src/data/planetData";
 
 const Planets: React.FC = () => {
   const { planet: planetName } = useParams<{ planet: string }>();
@@ -27,7 +27,7 @@ const Planets: React.FC = () => {
             item.englishName.toLowerCase() === planetName.toLowerCase()
         );
         setPlanet({
-          ...planetData.find(
+          ...planetsData.find(
             (item: any) => item.englishName == planet.englishName
           ),
           ...planet,

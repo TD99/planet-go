@@ -77,7 +77,6 @@ const Map = () => {
       <Marker
         position={[coordinates.coords.latitude, coordinates.coords.longitude]}
         icon={locationIcon}
-        rotationAngle={rotation}
       />
 
       <CompassButton position={coordinates} />
