@@ -1,18 +1,13 @@
 import { Geolocation, Position } from "@capacitor/geolocation";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { PointExpression, icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
 import { IonButton, IonIcon } from "@ionic/react";
 import { compass } from "ionicons/icons";
 
-function kmToLatLong(km: number) {
-  const earthRadius = 6371; // Earth's radius in km
-  const lat = km / earthRadius;
-  const long = km / (earthRadius * Math.cos((Math.PI * lat) / 180));
-  return { lat: lat, long: long };
-}
+import SolarSystem from "@src/components/SolarSystem/SolarSystem";
 
 const initialZoom = 16;
 
@@ -28,6 +23,15 @@ const locationIcon = icon({
 
 const planets = [
   { name: "Mercury", orbitRadius: 57909050, angle: 0 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 45 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 90 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 135 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 180 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 225 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 270 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 315 },
+  { name: "Mercury", orbitRadius: 57909050, angle: 360 },
+
   { name: "Venus", orbitRadius: 108208000, angle: 0 },
   { name: "Earth", orbitRadius: 149598023, angle: 0 },
   { name: "Mars", orbitRadius: 227939200, angle: 0 },
@@ -37,24 +41,21 @@ const planets = [
   { name: "Neptune", orbitRadius: 4503443661, angle: 0 },
 ];
 
-const scale = 5e-8; // scale factor to adjust the size of the orbits
+const scale = 1e-9; // scale factor to adjust the size of the orbits
 
-const Map: React.FC = () => {
+const Map = () => {
   const [coordinates, setCoordinates] = useState<Position | null>(null);
   const [rotation, setRotation] = useState(45);
-  const solarSystemCenter = [46.96183354935441, 7.464583268459782];
+  const solarSystemCenter: [number, number] = [
+    46.96183354935441, 7.464583268459782,
+  ];
 
   useEffect(() => {
     let watchId: string;
     const watchPosition = async () => {
       try {
-        watchId = await Geolocation.watchPosition({}, (position, err) => {
-          if (err) {
-            alert(err);
-          } else {
-            setCoordinates(position);
-            console.log(position);
-          }
+        watchId = await Geolocation.watchPosition({}, (position) => {
+          setCoordinates(position);
         });
       } catch (error) {
         alert(error);
@@ -70,7 +71,6 @@ const Map: React.FC = () => {
     const handleDeviceOrientation = (event: any) => {
       if (!event.alpha) return;
       setRotation(event.alpha);
-      console.log(event.alpha);
     };
 
     window.addEventListener("deviceorientation", handleDeviceOrientation);
@@ -103,33 +103,8 @@ const Map: React.FC = () => {
       />
 
       <CompassButton position={coordinates} />
-      {
-        // draw planets and their orbits
-        planets.map((planet) => {
-          // calculate x and y coordinates of planet based on its orbit radius and angle
-          let x = planet.orbitRadius * Math.cos(planet.angle) * scale;
-          let y = planet.orbitRadius * Math.sin(planet.angle) * scale;
 
-          x = solarSystemCenter[0] + kmToLatLong(x).lat;
-          y = solarSystemCenter[1] + kmToLatLong(y).long;
-
-          return (
-            <>
-              {/* Orbit */}
-              <Circle
-                center={solarSystemCenter}
-                radius={planet.orbitRadius * scale * 17.5} // TODO
-                fillOpacity={0}
-                color="red"
-                weight={2}
-              />
-
-              {/* Planet */}
-              <Circle center={[x, y]} radius={10} fillOpacity={1} />
-            </>
-          );
-        })
-      }
+      <SolarSystem solarSystemCenter={solarSystemCenter} scale={scale} />
     </MapContainer>
   );
 };
@@ -137,8 +112,7 @@ const Map: React.FC = () => {
 const CompassButton: React.FC<{ position: Position }> = ({ position }) => {
   const map = useMap();
 
-  const handleCompassClick = async () => {
-    console.log(map);
+  const handleCompassClick = () => {
     map.flyTo(
       [position.coords.latitude, position.coords.longitude],
       initialZoom
