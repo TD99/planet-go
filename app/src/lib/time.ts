@@ -8,3 +8,5 @@ const getNetworkTime = async () => {
         console.error(e);
     }
 }
+
+export default getNetworkTime;
