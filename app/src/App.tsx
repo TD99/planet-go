@@ -32,7 +32,7 @@ const App: React.FC = () => (
           <Route exact path="/home" render={() => <Home />} />
           <Route exact path="/game/map" render={() => <Map />} />
           <Route exact path="/game/orbit" render={() => <Orbit />} />
-          <Route exact path="/game/planets" render={() => <Planets />} />
+          <Route exact path="/game/planets/:planet" render={() => <Planets />} />
           <Route exact path="/game/shop" render={() => <Shop />} />
           <Route exact path="/settings" render={() => <Settings />} />
           <Route render={() => <ErrorNotFound />} />

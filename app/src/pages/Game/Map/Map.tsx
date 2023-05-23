@@ -21,8 +21,6 @@ const locationIcon = icon({
   className: "custom-marker-icon",
 });
 
-const scale = 1e-9; // scale factor to adjust the size of the orbits
-
 const Map = () => {
   const [coordinates, setCoordinates] = useState<Position | null>(null);
   const [rotation, setRotation] = useState(45);
@@ -84,7 +82,7 @@ const Map = () => {
 
       <CompassButton position={coordinates} />
 
-      <SolarSystem solarSystemCenter={solarSystemCenter} scale={scale} />
+      <SolarSystem solarSystemCenter={solarSystemCenter} />
     </MapContainer>
   );
 };

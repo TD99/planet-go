@@ -10,16 +10,17 @@ interface Planet {
   radius: number;
 }
 
+const orbitRadiusScale = 1e-9;
+const meanRadiusScale = 1e6;
+const sunMeanRadiusScale = 5e4;
+
 interface SolarSystemProps {
   solarSystemCenter: [number, number];
-  scale: number;
 }
 
-const SolarSystem: React.FC<SolarSystemProps> = ({
-  solarSystemCenter,
-  scale,
-}) => {
+const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
+  const [sun, setSun] = useState<Planet>();
 
   useEffect(() => {
     async function fetchPlanets() {
@@ -34,9 +35,20 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
             .theta *
             180) /
           Math.PI,
-        radius: planet.meanRadius * 3e6,
+        radius: planet.meanRadius * meanRadiusScale,
       }));
       setPlanets(planets);
+
+      let newSun = data.bodies.find((body: any) => body.englishName === "Sun");
+      console.log(newSun);
+      newSun = {
+        name: newSun.englishName,
+        orbitRadius: newSun.semimajorAxis,
+        angle: 0,
+        radius: newSun.meanRadius * sunMeanRadiusScale,
+      };
+      console.log(newSun);
+      setSun(newSun);
     }
     fetchPlanets();
   }, []);
@@ -45,8 +57,8 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     <>
       {planets.map((planet) => {
         // calculate x and y coordinates of planet based on its orbit radius and angle
-        let x = planet.orbitRadius * Math.cos(planet.angle) * scale;
-        let y = planet.orbitRadius * Math.sin(planet.angle) * scale;
+        let x = planet.orbitRadius * Math.cos(planet.angle) * orbitRadiusScale;
+        let y = planet.orbitRadius * Math.sin(planet.angle) * orbitRadiusScale;
 
         x = solarSystemCenter[0] + kmToLatLong(x, solarSystemCenter[0]).lat;
         y = solarSystemCenter[1] + kmToLatLong(y, solarSystemCenter[0]).long;
@@ -56,7 +68,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
             {/* Orbit */}
             <Circle
               center={solarSystemCenter}
-              radius={planet.orbitRadius * scale * 1000}
+              radius={planet.orbitRadius * orbitRadiusScale * 1000}
               fillOpacity={0}
               color="red"
               weight={2}
@@ -65,7 +77,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
             {/* Planet */}
             <Circle
               center={[x, y]}
-              radius={planet.radius * scale}
+              radius={planet.radius * orbitRadiusScale}
               fillOpacity={1}
               eventHandlers={{
                 click: () => {
@@ -76,6 +88,21 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
           </>
         );
       })}
+
+      {/* Sun */}
+      {sun && (
+        <Circle
+          center={solarSystemCenter}
+          radius={sun.radius * orbitRadiusScale}
+          fillOpacity={1}
+          color="yellow"
+          eventHandlers={{
+            click: () => {
+              console.log(sun.name);
+            },
+          }}
+        />
+      )}
     </>
   );
 };

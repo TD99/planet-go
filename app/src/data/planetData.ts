@@ -1,10 +1,10 @@
-export default [
-  { name: "Mercury", img: "mercury.png" },
-  { name: "Venus", img: "venus.png" },
-  { name: "Earth", img: "earth.png" },
-  { name: "Mars", img: "mars.png" },
-  { name: "Jupiter", img: "jupiter.png" },
-  { name: "Saturn", img: "saturn.png" },
-  { name: "Uranus", img: "uranus.png" },
-  { name: "Neptune", img: "neptune.png" },
+export const planetData = [
+  { englishName: "Mercury", img: "mercury.png" },
+  { englishName: "Venus", img: "venus.png" },
+  { englishName: "Earth", img: "earth.png" },
+  { englishName: "Mars", img: "mars.png" },
+  { englishName: "Jupiter", img: "jupiter.png" },
+  { englishName: "Saturn", img: "saturn.png" },
+  { englishName: "Uranus", img: "uranus.png" },
+  { englishName: "Neptune", img: "neptune.png" },
 ];
