@@ -20,7 +20,8 @@ export default defineConfig({
       '@pages': '/src/pages',
       '@theme': '/src/theme',
       '@lib': '/src/lib',
-      '@assets': '/src/assets'
+      '@assets': '/src/assets',
+      '@core': '/src/core'
     }
   }
 })
