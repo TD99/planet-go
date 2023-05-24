@@ -101,7 +101,7 @@ const CompassButton: React.FC<{ position: Position }> = ({ position }) => {
     <IonButton
       onClick={handleCompassClick}
       className="compass-button"
-      color="primary"
+      color="medium"
       shape="round"
       fill="clear"
       size="large"

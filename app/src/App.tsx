@@ -18,10 +18,39 @@ import {
   settingsOutline as settingsOutlineIcon,
   warning as warningIcon
 } from 'ionicons/icons';
+import { setupLocationPermission } from '@core/setupPermissions';
 import { ErrorNotFound, Home, Map, Orbit, Planets, Settings, Shop } from '@pages/.';
 import './assetsImports';
+import { AndroidSettings, IOSSettings, NativeSettings } from 'capacitor-native-settings';
+import { App as NativeApp } from '@capacitor/app';
+import { setupStatusBar } from './core/setupTheme';
 
 setupIonicReact();
+setupLocationPermission()
+  .then(e => {
+    if (e?.coarseLocation === "prompt" || e?.coarseLocation === "denied") {
+      let proceed = confirm("Die App konnte nicht gestartet werden, da die folgende Berechtigung fehlt: Standort\n\nZu den Einstellungen wechseln?");
+      if (proceed) {
+        NativeSettings.open({
+          optionAndroid: AndroidSettings.ApplicationDetails,
+          optionIOS: IOSSettings.App
+        });
+      } else {
+        NativeApp.exitApp();
+      }
+    }
+
+    if (e?.location === "prompt" || e?.location === "denied") {
+      let proceed = confirm("Die App wird eingeschränkt durch die folgende Berechtigung: Ungenauer Standort\n\nZu den Einstellungen wechseln?");
+      if (proceed) {
+        NativeSettings.open({
+          optionAndroid: AndroidSettings.ApplicationDetails,
+          optionIOS: IOSSettings.App
+        });
+      }
+    }
+  });
+setupStatusBar();
 
 const App: React.FC = () => (
   <IonApp>
