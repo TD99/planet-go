@@ -13,31 +13,11 @@ interface Body {
   eccentricity: number;
   sideralOrbit: number;
   englishName: string;
+  referencePerihelionTime: Date;
+  anomalisticPeriod: number;
 }
 
 export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
-  const referencePerihelionTimes: any = {
-    Mercury: new Date(2022, 2, 1),
-    Venus: new Date(2022, 0, 9),
-    Earth: new Date(2022, 0, 4),
-    Mars: new Date(2023, 7, 20),
-    Jupiter: new Date(2023, 8, 26),
-    Saturn: new Date(2024, 4, 21),
-    Uranus: new Date(2050, 3, 17),
-    Neptune: new Date(2042, 6, 3),
-  };
-
-  const anomalisticPeriods: any = {
-    Mercury: 87.9691,
-    Venus: 224.701,
-    Earth: 365.259636,
-    Mars: 686.98,
-    Jupiter: 4332.589,
-    Saturn: 10759.22,
-    Uranus: 30685.4,
-    Neptune: 60189,
-  };
-
   function kepler(eccentricity: number, meanAnomaly: number): number {
     let E = meanAnomaly;
     while (true) {
@@ -83,14 +63,14 @@ export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
 
   let planetData = [];
   for (let body of data) {
-    if (body.isPlanet) {
+    if (body.englishName !== "Sun") {
       let semimajorAxis = body.semimajorAxis; // in km
       let eccentricity = body.eccentricity;
       let orbitalPeriod = body.sideralOrbit; // in days
 
       let meanMotion = (2 * Math.PI) / orbitalPeriod;
-      let referencePerihelionTime = referencePerihelionTimes[body.englishName];
-      let anomalisticPeriod = anomalisticPeriods[body.englishName];
+      let referencePerihelionTime = body.referencePerihelionTime;
+      let anomalisticPeriod = body.anomalisticPeriod;
       let perihelionTime = calculatePerihelionTimes(
         referencePerihelionTime,
         anomalisticPeriod,

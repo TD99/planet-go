@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
 import { planetsData as planetsBaseData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
+import getNetworkTime from "@src/lib/time";
 
 const getPlanetByName = (data: any[], name: string) =>
   data.find((planet: any) => planet.englishName === name);
@@ -16,7 +17,7 @@ const orbitRadiusScale = (x: number) => {
 
 const planetRadiusScale = (x: number) => {
   const root = 2;
-  const scaleFactor = 2e-4;
+  const scaleFactor = 3e-4;
   return Math.pow(x, 1 / root) * scaleFactor;
 };
 
@@ -42,8 +43,10 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
         ...planet,
         ...getPlanetByName(data.bodies, planet.englishName),
       }));
+      console.log(planetsData[1]);
+      const time = await getNetworkTime();
       const planetPositions = getPlanetPositions(
-        new Date(2022, 2, 1),
+        time ? time : new Date(),
         planetsData
       );
       const planets = planetsData.map((planet: any) => ({
