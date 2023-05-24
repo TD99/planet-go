@@ -2,15 +2,11 @@ import { Circle, ImageOverlay } from "react-leaflet";
 import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
 import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
-import { planetsData as planetsData2 } from "@src/data/planetData";
+import { planetsData as planetsBaseData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
 
-const mergePlanetData = (a1: any[], a2: any[]) => {
-  return a1.map((planet) => {
-    const planet2 = a2.find((p) => p.englishName === planet.englishName);
-    return { ...planet, ...planet2 };
-  });
-};
+const getPlanetByName = (data: any[], name: string) =>
+  data.find((planet: any) => planet.englishName === name);
 
 const orbitRadiusScale = (x: number) => {
   const root = 2;
@@ -20,7 +16,7 @@ const orbitRadiusScale = (x: number) => {
 
 const planetRadiusScale = (x: number) => {
   const root = 2;
-  const scaleFactor = 1.5e-4;
+  const scaleFactor = 2e-4;
   return Math.pow(x, 1 / root) * scaleFactor;
 };
 
@@ -38,14 +34,18 @@ interface SolarSystemProps {
 
 const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
-  const [sun, setSun] = useState<Planet>();
 
   useEffect(() => {
     async function fetchPlanets() {
       const data = await getSolarSystemData();
-      const planetPositions = getPlanetPositions(new Date(2022, 2, 1), data);
-      let planetsData = data.bodies.filter((body: any) => body.isPlanet);
-      planetsData = mergePlanetData(planetsData, planetsData2);
+      let planetsData = planetsBaseData.map((planet: any) => ({
+        ...planet,
+        ...getPlanetByName(data.bodies, planet.englishName),
+      }));
+      const planetPositions = getPlanetPositions(
+        new Date(2022, 2, 1),
+        planetsData
+      );
       const planets = planetsData.map((planet: any) => ({
         name: planet.englishName,
         orbitRadius: orbitRadiusScale(planet.semimajorAxis),
@@ -55,21 +55,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
             180) /
           Math.PI,
         radius: planetRadiusScale(planet.meanRadius),
+        img: planet.img,
       }));
       setPlanets(planets);
-
-      let newSun = data.bodies.find((body: any) => body.englishName === "Sun");
-      console.log(newSun);
-      newSun = {
-        name: newSun.englishName,
-        orbitRadius: orbitRadiusScale(newSun.semimajorAxis),
-        angle: 0,
-        radius: planetRadiusScale(newSun.meanRadius),
-        img: "sun.png",
-      };
-      console.log(newSun);
-      setSun(newSun);
-      setPlanets([...planets, newSun]);
     }
     fetchPlanets();
   }, []);
@@ -84,7 +72,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
         x = solarSystemCenter[0] + kmToLatLong(x, solarSystemCenter[0]).lat;
         y = solarSystemCenter[1] + kmToLatLong(y, solarSystemCenter[0]).long;
 
-        console.log(planet.name, planet.radius);
         const bounds: LatLngBoundsExpression = [
           [
             x - kmToLatLong(planet.radius, solarSystemCenter[0]).lat,
@@ -95,7 +82,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
             y + kmToLatLong(planet.radius, solarSystemCenter[0]).long,
           ],
         ];
-        console.log(planet.name, bounds);
 
         return (
           <>

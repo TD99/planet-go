@@ -7,10 +7,6 @@ interface PlanetData {
   theta: number;
 }
 
-interface Data {
-  bodies: Body[];
-}
-
 interface Body {
   isPlanet: boolean;
   semimajorAxis: number;
@@ -19,7 +15,7 @@ interface Body {
   englishName: string;
 }
 
-export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
+export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
   const referencePerihelionTimes: any = {
     Mercury: new Date(2022, 2, 1),
     Venus: new Date(2022, 0, 9),
@@ -86,7 +82,7 @@ export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
   }
 
   let planetData = [];
-  for (let body of data.bodies) {
+  for (let body of data) {
     if (body.isPlanet) {
       let semimajorAxis = body.semimajorAxis; // in km
       let eccentricity = body.eccentricity;
@@ -112,8 +108,13 @@ export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
         semimajorAxis *
         Math.sqrt(1 - eccentricity ** 2) *
         Math.sin(eccentricAnomaly);
-
       planetData.push({ name: body.englishName, position: { x, y }, theta });
+    } else {
+      planetData.push({
+        name: body.englishName,
+        position: { x: 0, y: 0 },
+        theta: 0,
+      });
     }
   }
 

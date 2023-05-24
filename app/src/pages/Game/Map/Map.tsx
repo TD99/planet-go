@@ -8,6 +8,7 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { compass } from "ionicons/icons";
 
 import SolarSystem from "@src/components/SolarSystem/SolarSystem";
+import { getOrientation } from "@src/lib/orientation";
 
 const initialZoom = 16;
 
@@ -59,7 +60,11 @@ const Map = () => {
   }, []);
 
   if (!coordinates) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (

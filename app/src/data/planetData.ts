@@ -1,11 +1,13 @@
+// https://deep-fold.itch.io/pixel-planet-generator
+
 export const planetsData = [
-  { englishName: "Mercury", img: "mercury.png" },
-  { englishName: "Venus", img: "venus.png" },
-  { englishName: "Earth", img: "earth.png" },
-  { englishName: "Mars", img: "mars.png" },
-  { englishName: "Jupiter", img: "jupiter.png" },
-  { englishName: "Saturn", img: "saturn.png" },
-  { englishName: "Uranus", img: "uranus.png" },
-  { englishName: "Neptune", img: "neptune.png" },
-  { englishName: "Sun", img: "sun.png" },
+  { englishName: "Mercury", img: "" },
+  { englishName: "Venus", img: "" },
+  { englishName: "Earth", img: "" },
+  { englishName: "Mars", img: "" },
+  { englishName: "Jupiter", img: "" },
+  { englishName: "Saturn", img: "" },
+  { englishName: "Uranus", img: "" },
+  { englishName: "Neptune", img: "" },
+  { englishName: "Sun", img: "sun.gif" },
 ];
