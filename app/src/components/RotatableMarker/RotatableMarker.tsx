@@ -6,7 +6,7 @@ interface RotatableMarkerProps {
   position: LatLngExpression;
   rotation: number;
   icon: string;
-  iconSize: PointExpression;
+  iconSize: number[];
   iconAnchor: PointExpression;
 }
 
@@ -20,7 +20,6 @@ const RotatableMarker: React.FC<RotatableMarkerProps> = ({
   const markerIcon = divIcon({
     className: "custom-marker-icon",
     html: `<img src="${icon}" style="transform: rotate(${rotation}deg); width: ${iconSize[0]}px; height: ${iconSize[1]}px;" />`,
-    iconSize,
     iconAnchor,
   });
 

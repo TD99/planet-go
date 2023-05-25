@@ -1,10 +1,11 @@
-import { Circle, ImageOverlay } from "react-leaflet";
+import { Circle, ImageOverlay, LayerGroup, useMap } from "react-leaflet";
 import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
 import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
 import { planetsData as planetsBaseData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
 import getNetworkTime from "@src/lib/time";
+import useLocalStorage from "@src/hooks/useLocalStorage";
 
 const getPlanetByName = (data: any[], name: string) =>
   data.find((planet: any) => planet.englishName === name);
@@ -35,38 +36,63 @@ interface SolarSystemProps {
 
 const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
+  const [time, setTime] = useLocalStorage<Date>("time", new Date(2022, 0, 4));
+
+  async function fetchPlanets() {
+    const data = await getSolarSystemData();
+    let planetsData = planetsBaseData.map((planet: any) => ({
+      ...planet,
+      ...data.bodies.find((p: any) => p.englishName === planet.englishName),
+    }));
+    const planetPositions = getPlanetPositions(time, planetsData);
+    const newPlanets = planetsData.map((planet: any) => ({
+      name: planet.englishName,
+      orbitRadius: orbitRadiusScale(planet.semimajorAxis),
+      angle:
+        (planetPositions.filter((p) => p.name === planet.englishName)[0].theta *
+          180) /
+        Math.PI,
+      radius: planetRadiusScale(planet.meanRadius),
+      img: planet.img,
+    }));
+    setPlanets(newPlanets);
+  }
 
   useEffect(() => {
-    async function fetchPlanets() {
-      const data = await getSolarSystemData();
-      let planetsData = planetsBaseData.map((planet: any) => ({
-        ...planet,
-        ...getPlanetByName(data.bodies, planet.englishName),
-      }));
-      console.log(planetsData[1]);
-      const time = await getNetworkTime();
-      const planetPositions = getPlanetPositions(
-        time ? time : new Date(),
-        planetsData
-      );
-      const planets = planetsData.map((planet: any) => ({
-        name: planet.englishName,
-        orbitRadius: orbitRadiusScale(planet.semimajorAxis),
-        angle:
-          (planetPositions.filter((p) => p.name === planet.englishName)[0]
-            .theta *
-            180) /
-          Math.PI,
-        radius: planetRadiusScale(planet.meanRadius),
-        img: planet.img,
-      }));
-      setPlanets(planets);
-    }
+    if (!time) return;
     fetchPlanets();
+  }, [time]);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      setTime((date: Date) => {
+        let newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + 30);
+        return newDate;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <>
+    <LayerGroup>
+      {planets.map((planet) => {
+        return (
+          <>
+            {/* Orbit */}
+            {planet.name !== "Sun" && (
+              <Circle
+                center={solarSystemCenter}
+                radius={planet.orbitRadius * 1000}
+                fillOpacity={0}
+                color="black"
+                weight={1}
+              />
+            )}
+          </>
+        );
+      })}
+
       {planets.map((planet) => {
         // calculate x and y coordinates of planet based on its orbit radius and angle
         let x = planet.orbitRadius * Math.cos(planet.angle);
@@ -88,25 +114,15 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
 
         return (
           <>
-            {/* Orbit */}
-            {planet.name !== "Sun" && (
-              <Circle
-                center={solarSystemCenter}
-                radius={planet.orbitRadius * 1000}
-                fillOpacity={0}
-                color="black"
-                weight={1}
-              />
-            )}
-
             {/* Planet */}
             {planet.img ? (
               <ImageOverlay
+                className="planet"
                 url={`/planets/${planet.img}`}
                 bounds={bounds}
                 eventHandlers={{
                   click: () => {
-                    console.log(planet.name);
+                    console.log(planet);
                   },
                 }}
               />
@@ -117,7 +133,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
                 fillOpacity={1}
                 eventHandlers={{
                   click: () => {
-                    console.log(planet.name);
+                    console.log(planet);
                   },
                 }}
               />
@@ -125,7 +141,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
           </>
         );
       })}
-    </>
+    </LayerGroup>
   );
 };
 

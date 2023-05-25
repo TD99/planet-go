@@ -1,7 +1,7 @@
 import { Geolocation, Position } from "@capacitor/geolocation";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import { PointExpression, icon } from "leaflet";
+import { PointExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
 import { IonButton, IonIcon } from "@ionic/react";
@@ -12,15 +12,7 @@ import RotatableMarker from "@src/components/RotatableMarker/RotatableMarker";
 
 const initialZoom = 16;
 
-const userIconSize: PointExpression = [50, 50];
-
-const locationIcon = icon({
-  iconUrl:
-    "https://cdn.icon-icons.com/icons2/1369/PNG/512/-navigation_90505.png",
-  iconSize: userIconSize,
-  iconAnchor: [userIconSize[0] / 2, userIconSize[1] / 2],
-  className: "custom-marker-icon",
-});
+const userIconSize = [50, 50];
 
 const Map = () => {
   const [coordinates, setCoordinates] = useState<Position | null>(null);
