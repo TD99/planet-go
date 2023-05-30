@@ -1,7 +1,8 @@
 import { IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react";
+import { addTime, getTime } from "@src/converters/time";
 import { setupAll } from "@src/core/setupPermissions";
 import getNetworkTime from "@src/lib/time";
-import { AppPermissions } from "@src/types/interfaces";
+import { AppPermissions, TimeFactors } from "@src/types/interfaces";
 import { alertCircle, checkmarkCircle } from "ionicons/icons";
 import { useEffect, useState } from "react";
 
@@ -22,6 +23,7 @@ const Settings: React.FC = () => {
         coarseLocation: (localPermission.location?.coarseLocation == "granted"),
         location: (localPermission.location?.location == "granted")
       });
+      console.info(permissions.toString());
     }
     setPermissionsObj();
   }, []);
