@@ -23,7 +23,7 @@ import { ErrorNotFound, Home, Map, Orbit, Planets, Settings, Shop } from '@pages
 import './assetsImports';
 import { AndroidSettings, IOSSettings, NativeSettings } from 'capacitor-native-settings';
 import { App as NativeApp } from '@capacitor/app';
-import { setupStatusBar } from './core/setupTheme';
+import { setupStatusBarDark } from './core/setupTheme';
 
 setupIonicReact();
 setupLocationPermission()
@@ -50,7 +50,7 @@ setupLocationPermission()
       }
     }
   });
-setupStatusBar();
+setupStatusBarDark();
 
 const App: React.FC = () => (
   <IonApp>

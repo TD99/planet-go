@@ -8,6 +8,8 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { compass } from "ionicons/icons";
 
 import SolarSystem from "@src/components/SolarSystem/SolarSystem";
+import { StatusBar } from "@capacitor/status-bar";
+import { setupStatusBarLight } from "@src/core/setupTheme";
 
 const initialZoom = 16;
 
@@ -29,6 +31,9 @@ const Map = () => {
   ];
 
   useEffect(() => {
+    StatusBar.setOverlaysWebView({ overlay: true });
+    StatusBar.setStyle({ style: Dark})
+
     let watchId: string;
     const watchPosition = async () => {
       try {
