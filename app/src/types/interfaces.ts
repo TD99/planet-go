@@ -28,8 +28,7 @@ export interface LocationPermissions {
  * AppPermissions
  */
 
-export interface AppPermissions {
-    location?: LocationPermissions;
+export interface AppPermissions extends LocationPermissions {
 }
 
 /**

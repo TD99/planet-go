@@ -7,7 +7,7 @@ import { AppPermissions, LocationPermissions } from "@src/types/interfaces";
  */
 export async function setupAll() {
     const location = await setupLocationPermission();
-    return {...location} as AppPermissions;
+    return {...location } as AppPermissions;
 }
 
 /**
