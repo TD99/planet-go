@@ -81,7 +81,13 @@ const Map = () => {
 
       <CompassButton position={coordinates} />
 
-      <SolarSystem solarSystemCenter={solarSystemCenter} />
+      <SolarSystem
+        solarSystemCenter={solarSystemCenter}
+        userLocation={[
+          coordinates.coords.latitude,
+          coordinates.coords.longitude,
+        ]}
+      />
     </MapContainer>
   );
 };

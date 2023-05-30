@@ -32,36 +32,15 @@ interface Planet {
 
 interface SolarSystemProps {
   solarSystemCenter: [number, number];
+  userLocation: [number, number];
 }
 
-const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
+const SolarSystem: React.FC<SolarSystemProps> = ({
+  solarSystemCenter,
+  userLocation,
+}) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date(2022, 0, 4));
-
-  async function fetchPlanets() {
-    const data = await getSolarSystemData();
-    let planetsData = planetsBaseData.map((planet: any) => ({
-      ...planet,
-      ...data.bodies.find((p: any) => p.englishName === planet.englishName),
-    }));
-    const planetPositions = getPlanetPositions(time, planetsData);
-    const newPlanets = planetsData.map((planet: any) => ({
-      name: planet.englishName,
-      orbitRadius: orbitRadiusScale(planet.semimajorAxis),
-      angle:
-        (planetPositions.filter((p) => p.name === planet.englishName)[0].theta *
-          180) /
-        Math.PI,
-      radius: planetRadiusScale(planet.meanRadius),
-      img: planet.img,
-    }));
-    setPlanets(newPlanets);
-  }
-
-  useEffect(() => {
-    if (!time) return;
-    fetchPlanets();
-  }, [time]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -73,6 +52,63 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // TODO
+    planets.forEach((planet) => {
+      let x = planet.orbitRadius * Math.cos(planet.angle);
+      let y = planet.orbitRadius * Math.sin(planet.angle);
+
+      x = solarSystemCenter[0] + kmToLatLong(x, solarSystemCenter[0]).lat;
+      y = solarSystemCenter[1] + kmToLatLong(y, solarSystemCenter[0]).long;
+
+      const distance = Math.sqrt(
+        Math.pow(userLocation[0] - x, 2) + Math.pow(userLocation[1] - y, 2)
+      );
+      console.log(distance, "to", planet.name);
+
+      if (distance <= planet.radius) {
+        handleUserOnPlanet(planet);
+      }
+    });
+  }, [userLocation]);
+
+  useEffect(() => {
+    if (!time) return;
+    fetchPlanets();
+  }, [time]);
+
+  async function fetchPlanets() {
+    const data = await getSolarSystemData();
+    let planetsData = planetsBaseData.map((planet: any) => ({
+      ...planet,
+      ...data.bodies.find((p: any) => p.englishName === planet.englishName),
+    }));
+    const planetPositions = getPlanetPositions(time, planetsData);
+    const newPlanets = planetsData.map((planet: any) => {
+      const angle =
+        (planetPositions.filter((p) => p.name === planet.englishName)[0].theta *
+          180) /
+        Math.PI;
+
+      return {
+        name: planet.englishName,
+        orbitRadius: orbitRadiusScale(planet.semimajorAxis),
+        angle: angle,
+        radius: planetRadiusScale(planet.meanRadius),
+        img: planet.img,
+      };
+    });
+    setPlanets(newPlanets);
+  }
+
+  const handlePlanetClick = (planet: Planet) => {
+    console.log(planet);
+  };
+
+  const handleUserOnPlanet = (planet: Planet) => {
+    console.log("handleUserOnPlanet", planet.name);
+  };
 
   return (
     <LayerGroup>
@@ -120,11 +156,13 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
                 className="planet"
                 url={`/planets/${planet.img}`}
                 bounds={bounds}
+                interactive={true}
                 eventHandlers={{
                   click: () => {
-                    console.log(planet);
+                    handlePlanetClick(planet);
                   },
                 }}
+                zIndex={1000}
               />
             ) : (
               <Circle
@@ -133,7 +171,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ solarSystemCenter }) => {
                 fillOpacity={1}
                 eventHandlers={{
                   click: () => {
-                    console.log(planet);
+                    handlePlanetClick(planet);
                   },
                 }}
               />
