@@ -7,9 +7,6 @@ import { Icon, LatLngBoundsExpression } from "leaflet";
 import getNetworkTime from "@src/lib/time";
 import useLocalStorage from "@src/hooks/useLocalStorage";
 
-const getPlanetByName = (data: any[], name: string) =>
-  data.find((planet: any) => planet.englishName === name);
-
 const orbitRadiusScale = (x: number) => {
   const root = 2;
   const scaleFactor = 3e-5;
@@ -40,16 +37,16 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   userLocation,
 }) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
-  const [time, setTime] = useLocalStorage<Date>("time", new Date(2022, 0, 4));
+  const [time, setTime] = useLocalStorage<Date>("time", new Date());
 
   useEffect(() => {
     const interval = setInterval(async () => {
       setTime((date: Date) => {
         let newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + 30);
+        newDate.setDate(newDate.getDate() + 1);
         return newDate;
       });
-    }, 1000);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -65,7 +62,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
       const distance = Math.sqrt(
         Math.pow(userLocation[0] - x, 2) + Math.pow(userLocation[1] - y, 2)
       );
-      console.log(distance, "to", planet.name);
+      // console.log(distance, "to", planet.name);
 
       if (distance <= planet.radius) {
         handleUserOnPlanet(planet);
