@@ -37,7 +37,7 @@ export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
   for (let body of data) {
     if (body.englishName !== "Sun") {
       let orbitalPeriod = body.sideralOrbit; // in days
-      let meanMotion = 1 / orbitalPeriod;
+      let meanMotion = (2 * Math.PI) / orbitalPeriod;
       let referencePerihelionTime = body.referencePerihelionTime;
       let perihelionTime = calculatePerihelionTimes(
         referencePerihelionTime,

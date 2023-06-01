@@ -6,18 +6,7 @@ import { planetsData as planetsBaseData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
 import getNetworkTime from "@src/lib/time";
 import useLocalStorage from "@src/hooks/useLocalStorage";
-
-const orbitRadiusScale = (x: number) => {
-  const root = 2;
-  const scaleFactor = 3e-5;
-  return Math.pow(x, 1 / root) * scaleFactor;
-};
-
-const planetRadiusScale = (x: number) => {
-  const root = 2;
-  const scaleFactor = 3e-4;
-  return Math.pow(x, 1 / root) * scaleFactor;
-};
+import { AppSettings } from "@src/types/interfaces";
 
 interface Planet {
   name: string;
@@ -38,6 +27,19 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 }) => {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
+  const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
+
+  const orbitRadiusScale = (x: number) => {
+    const root = 2;
+    const scaleFactor = 3e-5;
+    return Math.pow(x, 1 / root) * scaleFactor;
+  };
+
+  const planetRadiusScale = (x: number) => {
+    const root = 3;
+    const scaleFactor = settings.scale || 2e-3;
+    return Math.pow(x, 1 / root) * scaleFactor;
+  };
 
   useEffect(() => {
     setTime(new Date(2023, 12, 4));
@@ -82,10 +84,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     }));
     const planetPositions = getPlanetPositions(time, planetsData);
     const newPlanets = planetsData.map((planet: any) => {
-      const angle =
-        (planetPositions.filter((p) => p.name === planet.englishName)[0].theta *
-          180) /
-        Math.PI;
+      const angle = planetPositions.filter(
+        (p) => p.name === planet.englishName
+      )[0].theta;
 
       return {
         name: planet.englishName,
