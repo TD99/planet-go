@@ -28,6 +28,25 @@ export interface LocationPermissions {
  * AppPermissions
  */
 
-export interface AppPermissions {
-    location?: LocationPermissions;
+export interface AppPermissions extends LocationPermissions {
+}
+
+/**
+ * AbsoluteTimeData
+ */
+
+export enum TimeFactors {
+    MILLISECONDS = 1,
+    SECONDS = 1 * 1000,
+    MINUTES = 1 * 1000 * 60,
+    HOURS = 1 * 1000 * 60 * 60,
+    DAYS = 1 * 1000 * 60 * 60 * 24,
+    WEEKS = 1 * 1000 * 60 * 60 * 24 * 7,
+    MONTHS = 1 * 1000 * 60 * 60 * 24 * 7 * 4,
+    YEARS = 1 * 1000 * 60 * 60 * 24 * 7 * 4 * 12
+}  
+
+export interface AbsoluteTimeData {
+    factor: TimeFactors,
+    value: number;
 }

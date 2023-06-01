@@ -1,8 +1,10 @@
-import { IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react";
+import { IonChip, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react";
+import { addTime, getTime } from "@src/converters/time";
 import { setupAll } from "@src/core/setupPermissions";
 import getNetworkTime from "@src/lib/time";
-import { AppPermissions } from "@src/types/interfaces";
-import { alertCircle, checkmarkCircle } from "ionicons/icons";
+import { AppPermissions, TimeFactors } from "@src/types/interfaces";
+import { AndroidSettings, IOSSettings, NativeSettings } from "capacitor-native-settings";
+import { alertCircle, checkmarkCircle, link } from "ionicons/icons";
 import { useEffect, useState } from "react";
 
 const Settings: React.FC = () => {
@@ -19,8 +21,8 @@ const Settings: React.FC = () => {
     const setPermissionsObj = async () => {
       const localPermission = await setupAll();
       setPermissions({
-        coarseLocation: (localPermission.location?.coarseLocation == "granted"),
-        location: (localPermission.location?.location == "granted")
+        coarseLocation: (localPermission.coarseLocation === "granted"),
+        location: (localPermission.location === "granted")
       });
     }
     setPermissionsObj();
@@ -37,6 +39,13 @@ const Settings: React.FC = () => {
       case 'light':
         break;
     }
+  }
+
+  const handlePermissionClick = () => {
+    NativeSettings.open({
+      optionAndroid: AndroidSettings.ApplicationDetails,
+      optionIOS: IOSSettings.App,
+    });
   }
 
   return (
@@ -66,6 +75,10 @@ const Settings: React.FC = () => {
             <IonLabel>Genauer Standort</IonLabel>
           </IonItem>
         </div>
+        <IonChip onClick={handlePermissionClick}>
+          <IonIcon icon={link} color="dark" />
+          <IonLabel>Berechtigungen verwalten</IonLabel>
+        </IonChip>
       </IonContent>
     </>
   );
