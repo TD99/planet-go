@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { PointExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./Map.css";
 import { IonButton, IonIcon } from "@ionic/react";
 import { compass } from "ionicons/icons";
+import "./Map.css";
 
 import SolarSystem from "@src/components/SolarSystem/SolarSystem";
 import RotatableMarker from "@src/components/RotatableMarker/RotatableMarker";

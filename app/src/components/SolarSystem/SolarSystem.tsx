@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
 import { planetsData as planetsBaseData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
+import { arrowUp } from "ionicons/icons";
 import getNetworkTime from "@src/lib/time";
 import useLocalStorage from "@src/hooks/useLocalStorage";
 import { AppSettings } from "@src/types/interfaces";
+import { useHistory } from "react-router";
+import { IonIcon } from "@ionic/react";
 
 interface Planet {
   name: string;
@@ -25,6 +28,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   solarSystemCenter,
   userLocation,
 }) => {
+  const history = useHistory();
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
@@ -65,11 +69,11 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
         Math.pow(userLocation[0] - x, 2) + Math.pow(userLocation[1] - y, 2)
       );
 
-      if (distance <= planet.radius) {
+      if (distance <= kmToLatLong(planet.radius, solarSystemCenter[0]).lat) {
         handleUserOnPlanet(planet);
       }
     });
-  }, [userLocation]);
+  }, [userLocation, time]);
 
   useEffect(() => {
     if (!time) return;
@@ -100,7 +104,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   }
 
   const handlePlanetClick = (planet: Planet) => {
-    console.log(planet);
+    history.push(`/game/planet/${planet.name.toLowerCase()}`);
   };
 
   const handleUserOnPlanet = (planet: Planet) => {
@@ -176,6 +180,11 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
           </>
         );
       })}
+      <div className="map-arrow-container">
+        <div className="map-arrow">
+          <IonIcon icon={arrowUp} />
+        </div>
+      </div>
     </LayerGroup>
   );
 };
