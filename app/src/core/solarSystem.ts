@@ -13,7 +13,6 @@ interface Body {
   anomalisticPeriod: number;
 }
 
-// TODO: Calculate for Circle
 export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
   function calculatePerihelionTimes(
     referencePerihelionTime: Date,
@@ -24,7 +23,7 @@ export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
       date.getTime() - referencePerihelionTime.getTime();
     let anomalisticPeriodsSinceReferencePerihelion =
       timeSinceReferencePerihelion / (anomalisticPeriod * 24 * 3600 * 1000);
-    let perihelionNumber = Math.round(
+    let perihelionNumber = Math.floor(
       anomalisticPeriodsSinceReferencePerihelion
     );
     let perihelionTime = new Date(
@@ -38,7 +37,7 @@ export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
   for (let body of data) {
     if (body.englishName !== "Sun") {
       let orbitalPeriod = body.sideralOrbit; // in days
-      let meanMotion = (2 * Math.PI) / orbitalPeriod;
+      let meanMotion = 1 / orbitalPeriod;
       let referencePerihelionTime = body.referencePerihelionTime;
       let perihelionTime = calculatePerihelionTimes(
         referencePerihelionTime,

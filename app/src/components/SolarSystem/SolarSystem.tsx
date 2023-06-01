@@ -40,18 +40,18 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
 
   useEffect(() => {
+    setTime(new Date(2023, 12, 4));
     const interval = setInterval(async () => {
       setTime((date: Date) => {
         let newDate = new Date(date);
         newDate.setDate(newDate.getDate() + 1);
         return newDate;
       });
-    }, 2000);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    // TODO
     planets.forEach((planet) => {
       let x = planet.orbitRadius * Math.cos(planet.angle);
       let y = planet.orbitRadius * Math.sin(planet.angle);
@@ -62,7 +62,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
       const distance = Math.sqrt(
         Math.pow(userLocation[0] - x, 2) + Math.pow(userLocation[1] - y, 2)
       );
-      // console.log(distance, "to", planet.name);
 
       if (distance <= planet.radius) {
         handleUserOnPlanet(planet);
