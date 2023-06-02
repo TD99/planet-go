@@ -32,6 +32,37 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
+  const [arrowRotation, setArrowRotation] = useState<number>(0);
+
+  useEffect(() => {
+    setTime(new Date(2025 + 40, 1, 1));
+    const interval = setInterval(async () => {
+      setTime((date: Date) => {
+        let newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + 365.25 * 0.8);
+        return newDate;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    planets.forEach((planet) => {
+      const { x, y } = calculatePlanetXY(planet);
+
+      const distance = Math.hypot(userLocation[0] - x, userLocation[1] - y);
+
+      if (distance <= kmToLatLong(planet.radius, solarSystemCenter[0]).lat) {
+        handleUserOnPlanet(planet);
+      }
+    });
+    setArrowRotation(getArrowRotation);
+  }, [userLocation, time]);
+
+  useEffect(() => {
+    if (!time) return;
+    fetchPlanets();
+  }, [time]);
 
   const orbitRadiusScale = (x: number) => {
     const root = 2;
@@ -44,42 +75,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     const scaleFactor = settings.scale || 2e-3;
     return Math.pow(x, 1 / root) * scaleFactor;
   };
-
-  useEffect(() => {
-    setTime(new Date(2023, 12, 4));
-    const interval = setInterval(async () => {
-      setTime((date: Date) => {
-        let newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + 1);
-        return newDate;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    planets.forEach((planet) => {
-      let x = planet.orbitRadius * Math.cos(planet.angle);
-      let y = planet.orbitRadius * Math.sin(planet.angle);
-
-      x = solarSystemCenter[0] + kmToLatLong(x, solarSystemCenter[0]).lat;
-      y = solarSystemCenter[1] + kmToLatLong(y, solarSystemCenter[0]).long;
-
-      const distance = Math.sqrt(
-        Math.pow(userLocation[0] - x, 2) + Math.pow(userLocation[1] - y, 2)
-      );
-
-      if (distance <= kmToLatLong(planet.radius, solarSystemCenter[0]).lat) {
-        handleUserOnPlanet(planet);
-      }
-    });
-  }, [userLocation, time]);
-
-  useEffect(() => {
-    if (!time) return;
-    fetchPlanets();
-  }, [time]);
-
   async function fetchPlanets() {
     const data = await getSolarSystemData();
     let planetsData = planetsBaseData.map((planet: any) => ({
@@ -109,6 +104,33 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   const handleUserOnPlanet = (planet: Planet) => {
     console.log("handleUserOnPlanet", planet.name);
+  };
+
+  const calculatePlanetXY = (planet: Planet) => {
+    let x = planet.orbitRadius * Math.cos(planet.angle);
+    let y = planet.orbitRadius * Math.sin(planet.angle);
+    x = solarSystemCenter[0] + kmToLatLong(x, solarSystemCenter[0]).lat;
+    y = solarSystemCenter[1] + kmToLatLong(y, solarSystemCenter[0]).long;
+    return { x, y };
+  };
+
+  const getNearestPlanet = () =>
+    planets.reduce(
+      (prev: any, curr) => {
+        const { x, y } = calculatePlanetXY(curr);
+
+        const distance = Math.hypot(userLocation[0] - x, userLocation[1] - y);
+        return distance < prev.distance ? { ...curr, distance, x, y } : prev;
+      },
+      { distance: Infinity }
+    );
+
+  const getArrowRotation = () => {
+    const planet = getNearestPlanet();
+    const dx = userLocation[0] - planet.x;
+    const dy = userLocation[1] - planet.y;
+    const angle = Math.atan2(dy, dx);
+    return (angle * 180) / Math.PI + 180;
   };
 
   return (
@@ -181,7 +203,10 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
         );
       })}
       <div className="map-arrow-container">
-        <div className="map-arrow">
+        <div
+          className="map-arrow"
+          style={{ transform: `translateX(-50%) rotate(${arrowRotation}deg)` }}
+        >
           <IonIcon icon={arrowUp} />
         </div>
       </div>
