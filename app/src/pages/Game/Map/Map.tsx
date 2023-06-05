@@ -10,8 +10,7 @@ import "./Map.css";
 import SolarSystem from "@src/components/SolarSystem/SolarSystem";
 import RotatableMarker from "@src/components/RotatableMarker/RotatableMarker";
 
-import { StatusBar } from "@capacitor/status-bar";
-import { setupStatusBarLight } from "@src/core/setupTheme";
+import { setupStatusBarDark } from "@src/core/setupTheme";
 
 const initialZoom = 16;
 
@@ -25,8 +24,7 @@ const Map = () => {
   ];
 
   useEffect(() => {
-    setupStatusBarLight();
-    StatusBar.setOverlaysWebView({ overlay: true });
+    setupStatusBarDark();
 
     let watchId: string;
     const watchPosition = async () => {

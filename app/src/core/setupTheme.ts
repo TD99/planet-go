@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { StatusBar } from "@capacitor/status-bar";
 
 /**
@@ -5,9 +6,13 @@ import { StatusBar } from "@capacitor/status-bar";
  */
 
 export function setupStatusBarDark() {
-    StatusBar.setBackgroundColor({ color: "#000000" });
+    if (Capacitor.isNativePlatform()) {
+        StatusBar.setBackgroundColor({ color: "#000000" });
+    }
 }
 
 export function setupStatusBarLight() {
-    StatusBar.setBackgroundColor({ color: "#FFFFFF" });
+    if (Capacitor.isNativePlatform()) {
+        StatusBar.setBackgroundColor({ color: "#FFFFFF" });
+    }
 }
