@@ -18,21 +18,32 @@ const initialZoom = 16;
 const userIconSize = [50, 50];
 
 const Map = () => {
-  const [coordinates, setCoordinates] = useState<Position | null>(null);
+  const [coordinates, setCoordinates] = useState<Position | null>({
+    timestamp: 1622800800000,
+    coords: {
+      latitude: 46.96183354935441,
+      longitude: 7.464583268459782,
+      accuracy: 30,
+      altitudeAccuracy: 10,
+      altitude: 500,
+      speed: 5,
+      heading: 90,
+    },
+  });
   const [rotation, setRotation] = useState(0);
   const solarSystemCenter: [number, number] = [
     46.96183354935441, 7.464583268459782,
   ];
 
   useEffect(() => {
-    setupStatusBarLight();
-    StatusBar.setOverlaysWebView({ overlay: true });
+    // setupStatusBarLight();
+    // StatusBar.setOverlaysWebView({ overlay: true });
 
     let watchId: string;
     const watchPosition = async () => {
       try {
         watchId = await Geolocation.watchPosition({}, (position) => {
-          setCoordinates(position);
+          if (position) setCoordinates(position);
         });
       } catch (error) {
         alert(error);
