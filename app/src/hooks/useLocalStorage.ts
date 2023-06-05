@@ -9,17 +9,18 @@ export default function useLocalStorage<Type>(
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      //   console.error(error);
       return initialValue;
     }
   });
 
   function setValue(value: Type | ((val?: Type) => Type)) {
     try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      setStoredValue((prevValue) => {
+        const valueToStore =
+          value instanceof Function ? value(prevValue) : value;
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        return valueToStore;
+      });
     } catch (error) {
       console.error(error);
     }

@@ -94,9 +94,9 @@ const App: React.FC = () => (
             <IonIcon icon={planetOutlineIcon} />
             <IonLabel>Orbit</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="planets" href="/game/planet/earth">
+          <IonTabButton tab="planet" href="/game/planet/earth">
             <IonIcon icon={planetOutlineIcon} />
-            <IonLabel>Planets</IonLabel>
+            <IonLabel>Planet</IonLabel>
           </IonTabButton>
           <IonTabButton tab="shop" href="/game/shop">
             <IonIcon icon={cartOutlineIcon} />

@@ -32,12 +32,6 @@ const Planets: React.FC = () => {
             (item: any) => item.englishName == planet.englishName
           ),
         });
-        console.log({
-          ...planet,
-          ...planetsData.find(
-            (item: any) => item.englishName == planet.englishName
-          ),
-        });
       } catch (error) {
         console.error(error);
         history.push("/game/map");
@@ -59,11 +53,7 @@ const Planets: React.FC = () => {
             {/* img */}
             <div className="ion-text-center">
               {planet.img && (
-                <img
-                  src={`./planets/${planet.img}`}
-                  width="80%"
-                  alt={planet.englishName}
-                />
+                <img src={`./planets/${planet.img}`} alt={planet.englishName} />
               )}
             </div>
 
