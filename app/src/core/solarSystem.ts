@@ -7,41 +7,17 @@ interface PlanetData {
   theta: number;
 }
 
-interface Data {
-  bodies: Body[];
-}
-
 interface Body {
   isPlanet: boolean;
   semimajorAxis: number;
   eccentricity: number;
   sideralOrbit: number;
   englishName: string;
+  referencePerihelionTime: Date;
+  anomalisticPeriod: number;
 }
 
-export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
-  const referencePerihelionTimes: any = {
-    Mercury: new Date(2022, 2, 1),
-    Venus: new Date(2022, 0, 9),
-    Earth: new Date(2022, 0, 4),
-    Mars: new Date(2023, 7, 20),
-    Jupiter: new Date(2023, 8, 26),
-    Saturn: new Date(2024, 4, 21),
-    Uranus: new Date(2050, 3, 17),
-    Neptune: new Date(2042, 6, 3),
-  };
-
-  const anomalisticPeriods: any = {
-    Mercury: 87.9691,
-    Venus: 224.701,
-    Earth: 365.259636,
-    Mars: 686.98,
-    Jupiter: 4332.589,
-    Saturn: 10759.22,
-    Uranus: 30685.4,
-    Neptune: 60189,
-  };
-
+export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
   function kepler(eccentricity: number, meanAnomaly: number): number {
     let E = meanAnomaly;
     while (true) {
@@ -86,15 +62,15 @@ export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
   }
 
   let planetData = [];
-  for (let body of data.bodies) {
-    if (body.isPlanet) {
+  for (let body of data) {
+    if (body.englishName !== "Sun") {
       let semimajorAxis = body.semimajorAxis; // in km
       let eccentricity = body.eccentricity;
       let orbitalPeriod = body.sideralOrbit; // in days
 
       let meanMotion = (2 * Math.PI) / orbitalPeriod;
-      let referencePerihelionTime = referencePerihelionTimes[body.englishName];
-      let anomalisticPeriod = anomalisticPeriods[body.englishName];
+      let referencePerihelionTime = body.referencePerihelionTime;
+      let anomalisticPeriod = body.anomalisticPeriod;
       let perihelionTime = calculatePerihelionTimes(
         referencePerihelionTime,
         anomalisticPeriod,
@@ -112,8 +88,13 @@ export function getPlanetPositions(time: Date, data: Data): PlanetData[] {
         semimajorAxis *
         Math.sqrt(1 - eccentricity ** 2) *
         Math.sin(eccentricAnomaly);
-
       planetData.push({ name: body.englishName, position: { x, y }, theta });
+    } else {
+      planetData.push({
+        name: body.englishName,
+        position: { x: 0, y: 0 },
+        theta: 0,
+      });
     }
   }
 

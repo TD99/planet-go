@@ -27,10 +27,16 @@ const Planets: React.FC = () => {
             item.englishName.toLowerCase() === planetName.toLowerCase()
         );
         setPlanet({
+          ...planet,
           ...planetsData.find(
             (item: any) => item.englishName == planet.englishName
           ),
+        });
+        console.log({
           ...planet,
+          ...planetsData.find(
+            (item: any) => item.englishName == planet.englishName
+          ),
         });
       } catch (error) {
         console.error(error);
@@ -47,27 +53,79 @@ const Planets: React.FC = () => {
           <IonTitle>Planets</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent className="ion-padding">
         {planet ? (
-          <IonGrid>
-            <IonRow>
-              <IonCol>Name</IonCol>
-              <IonCol>{planet.name}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>English Name</IonCol>
-              <IonCol>{planet.englishName}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Is Planet</IonCol>
-              <IonCol>{planet.isPlanet ? "Yes" : "No"}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Semimajor Axis</IonCol>
-              <IonCol>{planet.semimajorAxis}</IonCol>
-            </IonRow>
-            ...
-          </IonGrid>
+          <>
+            {/* img */}
+            <div className="ion-text-center">
+              {planet.img && (
+                <img
+                  src={`./planets/${planet.img}`}
+                  width="80%"
+                  alt={planet.englishName}
+                />
+              )}
+            </div>
+
+            {/* data */}
+            <IonGrid className="ion-padding-bottom">
+              <IonRow>
+                <IonCol>Name</IonCol>
+                <IonCol>{planet.englishName}</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Average temperature</IonCol>
+                <IonCol>
+                  {planet.avgTemp} K / {(planet.avgTemp - 273.15).toFixed(1)} °C
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Year</IonCol>
+                <IonCol>{planet.sideralOrbit} Earth days</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Day</IonCol>
+                <IonCol>{planet.sideralRotation} hours</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Number of Moons</IonCol>
+                <IonCol>{planet.moons ? planet.moons.length : 0}</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Radius</IonCol>
+                <IonCol>{planet.meanRadius} km</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Gravity</IonCol>
+                <IonCol>{planet.gravity} m/s²</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Density</IonCol>
+                <IonCol>{planet.density} g/cm³</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Mass</IonCol>
+                <IonCol>
+                  {planet.mass.massValue} x 10
+                  <sup>{planet.mass.massExponent}</sup> kg
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Volume</IonCol>
+                <IonCol>
+                  {planet.vol.volValue} x 10
+                  <sup>{planet.vol.volExponent}</sup> km³
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Orbit radius</IonCol>
+                <IonCol>{planet.semimajorAxis} km</IonCol>
+              </IonRow>
+            </IonGrid>
+
+            {/* description */}
+            <p>{planet.description}</p>
+          </>
         ) : (
           <>loading ...</>
         )}

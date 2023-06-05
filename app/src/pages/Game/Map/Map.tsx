@@ -1,38 +1,32 @@
 import { Geolocation, Position } from "@capacitor/geolocation";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import { PointExpression, icon } from "leaflet";
+import { PointExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
 import { IonButton, IonIcon } from "@ionic/react";
 import { compass } from "ionicons/icons";
 
 import SolarSystem from "@src/components/SolarSystem/SolarSystem";
+import RotatableMarker from "@src/components/RotatableMarker/RotatableMarker";
+
 import { StatusBar } from "@capacitor/status-bar";
 import { setupStatusBarLight } from "@src/core/setupTheme";
 
 const initialZoom = 16;
 
-const iconSize: PointExpression = [50, 50];
-
-const locationIcon = icon({
-  iconUrl:
-    "https://cdn.icon-icons.com/icons2/1369/PNG/512/-navigation_90505.png",
-  iconSize: iconSize,
-  iconAnchor: [iconSize[0] / 2, iconSize[1] / 2],
-  className: "custom-marker-icon",
-});
+const userIconSize = [50, 50];
 
 const Map = () => {
   const [coordinates, setCoordinates] = useState<Position | null>(null);
-  const [rotation, setRotation] = useState(45);
+  const [rotation, setRotation] = useState(0);
   const solarSystemCenter: [number, number] = [
     46.96183354935441, 7.464583268459782,
   ];
 
   useEffect(() => {
+    setupStatusBarLight();
     StatusBar.setOverlaysWebView({ overlay: true });
-    StatusBar.setStyle({ style: Dark})
 
     let watchId: string;
     const watchPosition = async () => {
@@ -64,7 +58,11 @@ const Map = () => {
   }, []);
 
   if (!coordinates) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -79,9 +77,12 @@ const Map = () => {
       />
 
       {/* User location */}
-      <Marker
+      <RotatableMarker
         position={[coordinates.coords.latitude, coordinates.coords.longitude]}
-        icon={locationIcon}
+        rotation={rotation}
+        icon="https://cdn.icon-icons.com/icons2/1369/PNG/512/-navigation_90505.png"
+        iconSize={userIconSize}
+        iconAnchor={[userIconSize[0] / 2, userIconSize[1] / 2]}
       />
 
       <CompassButton position={coordinates} />
