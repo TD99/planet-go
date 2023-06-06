@@ -1,6 +1,17 @@
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonIcon, IonLabel, IonAccordionGroup, IonAccordion, IonImg } from "@ionic/react";
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonAccordionGroup,
+  IonAccordion,
+  IonImg,
+} from "@ionic/react";
 import { warning as warningIcon } from "ionicons/icons";
-import './NotFound.css';
+import "./NotFound.css";
 import { useLocation } from "react-router";
 
 const ErrorNotFound: React.FC = () => {
@@ -13,16 +24,20 @@ const ErrorNotFound: React.FC = () => {
           <IonTitle>Seite nicht gefunden</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen className="ion-padding not-found-content">
-        <IonAccordionGroup>
-          <IonAccordion className="modern-accordion rounded">
+      <IonContent fullscreen className="ion-padding">
+        <IonAccordionGroup value="NotFound">
+          <IonAccordion className="modern-accordion rounded" value="NotFound">
             <IonItem slot="header" color="danger">
               <IonIcon icon={warningIcon} />
               <IonLabel>Die gewünschte Seite existiert nicht.</IonLabel>
             </IonItem>
-            <div className="ion-padding" slot="content">
+            <div
+              className="ion-padding"
+              slot="content"
+              style={{ backgroundColor: "#303030" }}
+            >
               <div>
-                <b>Datum: </b>
+                <b>Datum des Zugriffs: </b>
                 <span>{new Date().toLocaleString()}</span>
               </div>
               <div>
@@ -41,10 +56,9 @@ const ErrorNotFound: React.FC = () => {
           </IonAccordion>
         </IonAccordionGroup>
         <br />
-        {/* <IonImg src="/planet-not-found-5.jpg" className="rounded" /> */}
       </IonContent>
     </>
   );
 };
-  
+
 export default ErrorNotFound;

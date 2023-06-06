@@ -1,7 +1,3 @@
 .modern-accordion {
     background-color: var(--ion-color-light);
 }
-
-.not-found-content {
-    --background: url('/planet-not-found-5.jpg') center center no-repeat;
-}
