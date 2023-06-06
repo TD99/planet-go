@@ -1,5 +1,5 @@
 h1 {
-  font-family: 'Fast Hand', sans-serif;
+  font-family: "Fast Hand", sans-serif;
   font-size: 3.5rem !important;
 }
 
@@ -15,11 +15,17 @@ h1 {
 .flicker {
   animation: flicker 0.8s linear infinite alternate;
 }
- 
+
 @keyframes flicker {
-  0% {transform: scale(1); }
-  50% { transform: scale(1.4); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .dots-container {
@@ -43,4 +49,14 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.time-input {
+  position: absolute;
+  left: 50%;
+  top: 75%;
+  transform: translateX(-50%) translateY(-50%);
+
+  width: 10rem;
+  font-size: 20px;
 }

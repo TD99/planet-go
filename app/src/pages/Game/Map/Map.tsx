@@ -30,9 +30,6 @@ const Map = () => {
     },
   });
   const [rotation, setRotation] = useState(0);
-  const solarSystemCenter: [number, number] = [
-    46.96183354935441, 7.464583268459782,
-  ];
 
   useEffect(() => {
     setupStatusBarDark();
@@ -97,7 +94,6 @@ const Map = () => {
       <CompassButton position={coordinates} />
 
       <SolarSystem
-        solarSystemCenter={solarSystemCenter}
         userLocation={[
           coordinates.coords.latitude,
           coordinates.coords.longitude,

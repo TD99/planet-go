@@ -22,31 +22,26 @@ interface Planet {
 }
 
 interface SolarSystemProps {
-  solarSystemCenter: [number, number];
   userLocation: [number, number];
 }
 
-const SolarSystem: React.FC<SolarSystemProps> = ({
-  solarSystemCenter,
-  userLocation,
-}) => {
+const SolarSystem: React.FC<SolarSystemProps> = ({ userLocation }) => {
   const history = useHistory();
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
   const [arrowRotation, setArrowRotation] = useState<number>(0);
   const [nearestPlanet, setNearestPlanet] = useState<Planet | null>(null);
+  const [solarSystemCenter, setSolarSystemCenter] = useState<[number, number]>([
+    46.96183354935441, 7.464583268459782,
+  ]);
 
   useEffect(() => {
-    setTime(new Date(2025 + 40, 1, 1));
-    const interval = setInterval(async () => {
-      setTime((date: Date) => {
-        let newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + 365.25 * 0.8);
-        return newDate;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
+    async function loadTime() {
+      if (time) return;
+      setTime(await getNetworkTime());
+    }
+    loadTime();
   }, []);
 
   useEffect(() => {
@@ -66,8 +61,14 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   useEffect(() => {
     if (!time) return;
-    fetchPlanets();
+    loadPlanets();
   }, [time]);
+
+  useEffect(() => {
+    if (!settings) return;
+    if (!settings?.solarSystemCenter) return;
+    setSolarSystemCenter(settings.solarSystemCenter);
+  }, [settings]);
 
   const orbitRadiusScale = (x: number) => {
     const root = 2;
@@ -83,10 +84,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     return Math.pow(x, 1 / root) * scaleFactor;
   };
 
-  async function fetchPlanets() {
-    console.log(planetsData.length);
-    const planetPositions = getPlanetPositions(time, planetsData);
-    const newPlanets = planetsData.map((planet: any) => {
+  async function loadPlanets() {
+    const planetPositions = getPlanetPositions(new Date(time), planetsData);
+    let newPlanets = planetsData.map((planet: any) => {
       const angle = planetPositions.filter(
         (p) => p.name === planet.englishName
       )[0].theta;
@@ -99,12 +99,14 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
         img: planet.img,
       };
     });
+    if (new Date(time) > new Date(2006, 1, 1)) {
+      newPlanets = newPlanets.filter((planet: any) => planet.name !== "Pluto");
+    }
+    console.log("newPlanets", newPlanets);
     setPlanets(newPlanets);
   }
 
   const handlePlanetClick = (planet: Planet) => {
-    console.log(planet);
-    console.log(`/game/planet/${planet.name.toLowerCase()}`);
     history.push(`/game/planet/${planet.name.toLowerCase()}`);
   };
 
