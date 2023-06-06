@@ -28,3 +28,9 @@ img {
 :is(ion-img).rounded {
   overflow: hidden;
 }
+
+hr {
+  border: none;
+  height: 0.05px;
+  background-color: var(--ion-color-dark);
+}

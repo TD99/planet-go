@@ -1,4 +1,9 @@
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
   IonChip,
   IonContent,
   IonHeader,
@@ -15,7 +20,7 @@ import {
 import { addTime, getTime } from "@src/converters/time";
 import { setupAll } from "@src/core/setupPermissions";
 import useLocalStorage from "@src/hooks/useLocalStorage";
-import getNetworkTime from "@src/lib/time";
+import { getNetworkTime } from "@src/lib/time";
 import {
   AppPermissions,
   AppSettings,
@@ -31,6 +36,8 @@ import {
   checkmarkCircle,
   expandOutline,
   link,
+  mapOutline,
+  refreshOutline,
   scale,
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
@@ -81,6 +88,11 @@ const Settings: React.FC = () => {
     });
   };
 
+  const handleResetClick = () => {
+    localStorage.removeItem("settings");
+    App.exitApp();
+  };
+
   const handleScaleChange = (e: any) => {
     const value = e.target.value;
     const calcValue = value * 1e-3;
@@ -98,6 +110,9 @@ const Settings: React.FC = () => {
     <>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="#"></IonBackButton>
+          </IonButtons>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -145,9 +160,17 @@ const Settings: React.FC = () => {
           </IonChip>
         </IonRange>
         <hr />
-        <h2>Entwicklerinformationen</h2>
-        <h3>Systemzeit</h3>
-        <span>{time}</span>
+        <h2>Entwickleroptionen</h2>
+        <IonChip onClick={handleResetClick}>
+          <IonIcon icon={refreshOutline} color="dark" />
+          <IonLabel>Zurücksetzen</IonLabel>
+        </IonChip>
+        <br />
+        <span>Nativ: {Capacitor.isNativePlatform() ? "Ja" : "Nein"}</span>
+        <br />
+        <span>Webzeit: {time}</span>
+        <br />
+        <span>Lokale Zeit: </span>
       </IonContent>
     </>
   );
