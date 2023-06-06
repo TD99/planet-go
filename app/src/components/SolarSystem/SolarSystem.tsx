@@ -72,7 +72,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   const orbitRadiusScale = (x: number) => {
     const root = 2;
-    const scaleFactor = 3e-5;
+    const scaleFactor = settings.scale ? settings.scale * 0.1 : 3e-5;
     return Math.pow(x, 1 / root) * scaleFactor;
   };
 
@@ -81,6 +81,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     const scaleFactor = settings.scale || 2e-3;
     return Math.pow(x, 1 / root) * scaleFactor;
   };
+
   async function fetchPlanets() {
     const data = await getSolarSystemData();
     let planetsData = planetsBaseData.map((planet: any) => ({

@@ -138,12 +138,15 @@ const Settings: React.FC = () => {
           labelPlacement="start"
           min={0}
           max={10}
-          defaultValue={scale || 0}
+          color="dark"
+          value={scale * 1000}
+          ticks
+          snaps
           onIonChange={handleScaleChange}
         >
-          <IonLabel slot="start">Scale</IonLabel>
+          <IonLabel slot="start" style={{fontSize: 14}}>Scale</IonLabel>
         </IonRange>
-        <IonLabel>{scale}</IonLabel>
+        <IonLabel>{scale * 10000 + 100}%</IonLabel>
       </IonContent>
     </>
   );
