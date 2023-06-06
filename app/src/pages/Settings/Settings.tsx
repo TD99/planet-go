@@ -36,6 +36,7 @@ const Settings: React.FC = () => {
     coarseLocation: false,
     location: false,
   });
+  const [scale, setScale] = useState(settings.scale as number);
 
   useEffect(() => {
     const setTimeStr = async () => {
@@ -76,10 +77,14 @@ const Settings: React.FC = () => {
 
   const handleScaleChange = (e: any) => {
     const value = e.target.value;
-    console.log(value * 1e-3);
+    const calcValue = value * 1e-3;
+
+    setScale(calcValue);
+
+    console.log(calcValue);
     setSettings((settings: AppSettings) => ({
       ...settings,
-      scale: value * 1e-3,
+      scale: calcValue,
     }));
   };
 
@@ -133,11 +138,15 @@ const Settings: React.FC = () => {
           labelPlacement="start"
           min={0}
           max={10}
-          defaultValue={settings.scale || 0}
+          color="dark"
+          value={scale * 1000}
+          ticks
+          snaps
           onIonChange={handleScaleChange}
         >
-          <IonLabel slot="start">Scale</IonLabel>
+          <IonLabel slot="start" style={{fontSize: 14}}>Scale</IonLabel>
         </IonRange>
+        <IonLabel>{scale * 10000 + 100}%</IonLabel>
       </IonContent>
     </>
   );
