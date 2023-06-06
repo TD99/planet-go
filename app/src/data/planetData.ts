@@ -1193,7 +1193,7 @@ export const planetsData = [
   },
   {
     englishName: "Pluto",
-    img: "",
+    img: "Pluto.svg",
     description:
       "Pluto is a dwarf planet in the Kuiper Belt. Once considered the ninth planet, it is now classified as a dwarf planet.",
     referencePerihelionTime: new Date(1989, 8, 5),

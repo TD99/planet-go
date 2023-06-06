@@ -72,8 +72,12 @@ const App: React.FC = () => (
           <Route render={() => <ErrorNotFound />} />
         </IonRouterOutlet>
         <IonTabBar
+          className="tabbar"
           slot="bottom"
-          style={{ display: "flex", justifyContent: "space-between" }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
         >
           <IonTabButton tab="home" href="/home">
             <IonIcon icon={homeIcon} />

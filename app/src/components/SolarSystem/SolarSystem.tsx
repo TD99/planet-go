@@ -39,7 +39,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   useEffect(() => {
     async function loadTime() {
-      if (!time) return;
+      if (time) return;
       setTime(await getNetworkTime());
     }
     loadTime();
@@ -62,7 +62,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   useEffect(() => {
     if (!time) return;
-    fetchPlanets();
+    loadPlanets();
   }, [time]);
 
   const orbitRadiusScale = (x: number) => {
@@ -79,9 +79,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     return Math.pow(x, 1 / root) * scaleFactor;
   };
 
-  async function fetchPlanets() {
-    const planetPositions = getPlanetPositions(time, planetsData);
-    const newPlanets = planetsData.map((planet: any) => {
+  async function loadPlanets() {
+    const planetPositions = getPlanetPositions(new Date(time), planetsData);
+    let newPlanets = planetsData.map((planet: any) => {
       const angle = planetPositions.filter(
         (p) => p.name === planet.englishName
       )[0].theta;
@@ -94,6 +94,10 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
         img: planet.img,
       };
     });
+    if (new Date(time) > new Date(2006, 1, 1)) {
+      newPlanets = newPlanets.filter((planet: any) => planet.name !== "Pluto");
+    }
+    console.log("newPlanets", newPlanets);
     setPlanets(newPlanets);
   }
 

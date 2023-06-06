@@ -46,6 +46,7 @@ export function getPlanetPositions(time: Date, data: Body[]): PlanetData[] {
       let timeSincePerihelion =
         (time.getTime() - perihelionTime.getTime()) / (24 * 3600 * 1000); // in days
       let theta = meanMotion * timeSincePerihelion;
+      console.log(body);
 
       planetData.push({ name: body.englishName, theta });
     } else {
