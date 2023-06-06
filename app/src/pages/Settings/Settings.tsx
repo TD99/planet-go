@@ -26,7 +26,13 @@ import {
   IOSSettings,
   NativeSettings,
 } from "capacitor-native-settings";
-import { alertCircle, checkmarkCircle, link, scale } from "ionicons/icons";
+import {
+  alertCircle,
+  checkmarkCircle,
+  expandOutline,
+  link,
+  scale,
+} from "ionicons/icons";
 import { useEffect, useState } from "react";
 
 const Settings: React.FC = () => {
@@ -96,19 +102,6 @@ const Settings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen className="ion-padding">
-        <IonSelect
-          aria-label="theme-select"
-          placeholder="Select Theme"
-          label="Theme"
-          onChange={selectHandler}
-        >
-          <IonSelectOption value="auto">Dynamic</IonSelectOption>
-          <IonSelectOption value="dark">Dark</IonSelectOption>
-          <IonSelectOption value="light">Light</IonSelectOption>
-        </IonSelect>
-        <hr />
-        <span>Time: {time}</span>
-        <hr />
         <h2>Berechtigungen</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
           <IonItem>
@@ -145,10 +138,16 @@ const Settings: React.FC = () => {
           onIonChange={handleScaleChange}
         >
           <IonLabel slot="start" style={{ fontSize: 14 }}>
-            Scale
+            Skalierung
           </IonLabel>
+          <IonChip slot="end">
+            <IonLabel>{scale * 10000 + 100}%</IonLabel>
+          </IonChip>
         </IonRange>
-        <IonLabel>{scale * 10000 + 100}%</IonLabel>
+        <hr />
+        <h2>Entwicklerinformationen</h2>
+        <h3>Systemzeit</h3>
+        <span>{time}</span>
       </IonContent>
     </>
   );
