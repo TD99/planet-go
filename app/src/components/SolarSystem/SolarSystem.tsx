@@ -1,8 +1,7 @@
 import { Circle, ImageOverlay, LayerGroup, useMap } from "react-leaflet";
-import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
 import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
-import { planetsData as planetsBaseData } from "@src/data/planetData";
+import { planetsData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
 import { arrowUp } from "ionicons/icons";
 import getNetworkTime from "@src/lib/time";
@@ -72,22 +71,20 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
 
   const orbitRadiusScale = (x: number) => {
     const root = 2;
-    const scaleFactor = settings.scale ? settings.scale * 0.1 : 3e-5;
+    const scaleFactor =
+      settings.scale !== undefined ? settings.scale * 0.005 : 3e-5;
     return Math.pow(x, 1 / root) * scaleFactor;
   };
 
   const planetRadiusScale = (x: number) => {
     const root = 3;
-    const scaleFactor = settings.scale || 2e-3;
+    const scaleFactor =
+      settings.scale !== undefined ? settings.scale * 0.4 : 2e-3;
     return Math.pow(x, 1 / root) * scaleFactor;
   };
 
   async function fetchPlanets() {
-    const data = await getSolarSystemData();
-    let planetsData = planetsBaseData.map((planet: any) => ({
-      ...planet,
-      ...data.bodies.find((p: any) => p.englishName === planet.englishName),
-    }));
+    console.log(planetsData.length);
     const planetPositions = getPlanetPositions(time, planetsData);
     const newPlanets = planetsData.map((planet: any) => {
       const angle = planetPositions.filter(
@@ -106,6 +103,8 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   }
 
   const handlePlanetClick = (planet: Planet) => {
+    console.log(planet);
+    console.log(`/game/planet/${planet.name.toLowerCase()}`);
     history.push(`/game/planet/${planet.name.toLowerCase()}`);
   };
 
@@ -183,7 +182,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
             {planet.img ? (
               <ImageOverlay
                 className="planet"
-                url={`/planets/${planet.img}`}
+                url={`./planets/${planet.img}`}
                 bounds={bounds}
                 interactive={true}
                 eventHandlers={{

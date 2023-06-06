@@ -4,7 +4,6 @@ interface PlanetData {
 }
 
 interface Body {
-  isPlanet: boolean;
   semimajorAxis: number;
   eccentricity: number;
   sideralOrbit: number;

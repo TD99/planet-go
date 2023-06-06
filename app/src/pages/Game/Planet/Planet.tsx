@@ -23,17 +23,12 @@ const Planets: React.FC = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        const data = await getSolarSystemData();
-        const planet = data.bodies.find(
+        const data = planetsData;
+        const planet = data.find(
           (item: any) =>
             item.englishName.toLowerCase() === planetName.toLowerCase()
         );
-        setPlanet({
-          ...planet,
-          ...planetsData.find(
-            (item: any) => item.englishName == planet.englishName
-          ),
-        });
+        setPlanet(planet);
       } catch (error) {
         console.error(error);
         history.push("/game/map");

@@ -20,7 +20,7 @@ const Map = () => {
   const [coordinates, setCoordinates] = useState<Position | null>({
     timestamp: 1622800800000,
     coords: {
-      latitude: 46.95183354935441,
+      latitude: 46.96183354935441,
       longitude: 7.464583268459782,
       accuracy: 30,
       altitudeAccuracy: 10,
