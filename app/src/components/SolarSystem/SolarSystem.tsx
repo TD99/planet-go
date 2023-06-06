@@ -17,6 +17,9 @@ interface Planet {
   angle: number;
   radius: number;
   img?: string;
+  x?: number;
+  y?: number;
+  distance?: number;
 }
 
 interface SolarSystemProps {
@@ -33,6 +36,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
   const [arrowRotation, setArrowRotation] = useState<number>(0);
+  const [nearestPlanet, setNearestPlanet] = useState<Planet | null>(null);
 
   useEffect(() => {
     setTime(new Date(2025 + 40, 1, 1));
@@ -56,7 +60,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
         handleUserOnPlanet(planet);
       }
     });
-    setArrowRotation(getArrowRotation);
+    const newNearestPlanet = getNearestPlanet();
+    setNearestPlanet(newNearestPlanet);
+    setArrowRotation(getArrowRotation(newNearestPlanet));
   }, [userLocation, time]);
 
   useEffect(() => {
@@ -125,8 +131,7 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
       { distance: Infinity }
     );
 
-  const getArrowRotation = () => {
-    const planet = getNearestPlanet();
+  const getArrowRotation = (planet: any) => {
     const dx = userLocation[0] - planet.x;
     const dy = userLocation[1] - planet.y;
     const angle = Math.atan2(dy, dx);
@@ -207,8 +212,9 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
           className="map-arrow"
           style={{ transform: `translateX(-50%) rotate(${arrowRotation}deg)` }}
         >
-          <IonIcon icon={arrowUp} />
+          <IonIcon icon={arrowUp} className="icon" />
         </div>
+        <img src={`/planets/${nearestPlanet?.img}`} alt="" />
       </div>
     </LayerGroup>
   );
