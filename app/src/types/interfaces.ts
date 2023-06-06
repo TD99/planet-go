@@ -56,4 +56,5 @@ export interface AbsoluteTimeData {
 
 export interface AppSettings {
   scale?: number;
+  solarSystemCenter?: [number, number];
 }

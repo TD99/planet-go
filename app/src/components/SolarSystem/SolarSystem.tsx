@@ -22,20 +22,19 @@ interface Planet {
 }
 
 interface SolarSystemProps {
-  solarSystemCenter: [number, number];
   userLocation: [number, number];
 }
 
-const SolarSystem: React.FC<SolarSystemProps> = ({
-  solarSystemCenter,
-  userLocation,
-}) => {
+const SolarSystem: React.FC<SolarSystemProps> = ({ userLocation }) => {
   const history = useHistory();
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [time, setTime] = useLocalStorage<Date>("time", new Date());
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", {});
   const [arrowRotation, setArrowRotation] = useState<number>(0);
   const [nearestPlanet, setNearestPlanet] = useState<Planet | null>(null);
+  const [solarSystemCenter, setSolarSystemCenter] = useState<[number, number]>([
+    46.96183354935441, 7.464583268459782,
+  ]);
 
   useEffect(() => {
     async function loadTime() {
@@ -64,6 +63,12 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
     if (!time) return;
     loadPlanets();
   }, [time]);
+
+  useEffect(() => {
+    if (!settings) return;
+    if (!settings?.solarSystemCenter) return;
+    setSolarSystemCenter(settings.solarSystemCenter);
+  }, [settings]);
 
   const orbitRadiusScale = (x: number) => {
     const root = 2;

@@ -1,3 +1,4 @@
+import "leaflet/dist/leaflet.css";
 import {
   IonChip,
   IonContent,
@@ -34,6 +35,9 @@ import {
   scale,
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+
+import "./Settings.css";
 
 const Settings: React.FC = () => {
   const [time, setTime] = useState(null as any);
@@ -43,6 +47,9 @@ const Settings: React.FC = () => {
     location: false,
   });
   const [scale, setScale] = useState((settings.scale as number) - 1e-3);
+  const [solarSystemCenter, setSolarSystemCenter] = useState<[number, number]>([
+    46.96183354935441, 7.464583268459782,
+  ]);
 
   useEffect(() => {
     const setTimeStr = async () => {
@@ -94,6 +101,22 @@ const Settings: React.FC = () => {
     }));
   };
 
+  const handleMapClick = (e: any) => {
+    const center: [number, number] = [e.latlng.lat, e.latlng.lng];
+    setSolarSystemCenter(center);
+    setSettings((settings: AppSettings) => ({
+      ...settings,
+      solarSystemCenter: center,
+    }));
+  };
+
+  const MapEvents = () => {
+    useMapEvents({
+      click: handleMapClick,
+    });
+    return null;
+  };
+
   return (
     <>
       <IonHeader>
@@ -126,24 +149,33 @@ const Settings: React.FC = () => {
           <IonLabel>Berechtigungen verwalten</IonLabel>
         </IonChip>
         <h2>Map</h2>
-        <IonRange
-          className="slider"
-          labelPlacement="start"
-          min={0}
-          max={10}
-          color="dark"
-          value={scale * 1000}
-          ticks
-          snaps
-          onIonChange={handleScaleChange}
-        >
-          <IonLabel slot="start" style={{ fontSize: 14 }}>
-            Skalierung
-          </IonLabel>
-          <IonChip slot="end">
-            <IonLabel>{scale * 10000 + 100}%</IonLabel>
-          </IonChip>
-        </IonRange>
+        <div>
+          <IonRange
+            className="slider"
+            labelPlacement="start"
+            min={0}
+            max={10}
+            color="dark"
+            value={scale * 1000}
+            ticks
+            snaps
+            onIonChange={handleScaleChange}
+          >
+            <IonLabel slot="start" style={{ fontSize: 14 }}>
+              Skalierung
+            </IonLabel>
+            <IonChip slot="end">
+              <IonLabel>{scale * 10000 + 100}%</IonLabel>
+            </IonChip>
+          </IonRange>
+
+          <MapContainer center={solarSystemCenter} zoom={13}>
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {/* https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png */}
+            <Marker position={solarSystemCenter} />
+            <MapEvents />
+          </MapContainer>
+        </div>
         <hr />
         <h2>Entwicklerinformationen</h2>
         <h3>Systemzeit</h3>
