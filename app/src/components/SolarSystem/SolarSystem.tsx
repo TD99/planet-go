@@ -38,15 +38,11 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   const [nearestPlanet, setNearestPlanet] = useState<Planet | null>(null);
 
   useEffect(() => {
-    setTime(new Date(2025 + 40, 1, 1));
-    const interval = setInterval(async () => {
-      setTime((date: Date) => {
-        let newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + 365.25 * 0.8);
-        return newDate;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
+    async function loadTime() {
+      if (!time) return;
+      setTime(await getNetworkTime());
+    }
+    loadTime();
   }, []);
 
   useEffect(() => {
@@ -84,7 +80,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   };
 
   async function fetchPlanets() {
-    console.log(planetsData.length);
     const planetPositions = getPlanetPositions(time, planetsData);
     const newPlanets = planetsData.map((planet: any) => {
       const angle = planetPositions.filter(
@@ -103,8 +98,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
   }
 
   const handlePlanetClick = (planet: Planet) => {
-    console.log(planet);
-    console.log(`/game/planet/${planet.name.toLowerCase()}`);
     history.push(`/game/planet/${planet.name.toLowerCase()}`);
   };
 

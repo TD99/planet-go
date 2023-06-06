@@ -10,7 +10,6 @@ import {
   IonButtons,
   IonBackButton,
 } from "@ionic/react";
-import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { planetsData } from "@src/data/planetData";
