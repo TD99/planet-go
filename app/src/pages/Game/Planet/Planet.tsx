@@ -7,6 +7,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonButtons,
+  IonBackButton,
 } from "@ionic/react";
 import { getSolarSystemData } from "@src/lib/solarSystem";
 import { useEffect, useState } from "react";
@@ -44,10 +46,13 @@ const Planets: React.FC = () => {
     <>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="#" />
+          </IonButtons>
           <IonTitle>Planets</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding" fullscreen>
         {planet ? (
           <>
             {/* img */}
