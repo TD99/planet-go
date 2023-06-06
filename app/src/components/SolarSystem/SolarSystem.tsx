@@ -210,11 +210,15 @@ const SolarSystem: React.FC<SolarSystemProps> = ({
       <div className="map-arrow-container">
         <div
           className="map-arrow"
-          style={{ transform: `translateX(-50%) rotate(${arrowRotation}deg)` }}
+          style={{
+            transform: `translateX(-50%) translateY(-25%) rotate(${arrowRotation}deg)`,
+          }}
         >
           <IonIcon icon={arrowUp} className="icon" />
         </div>
-        <img src={`/planets/${nearestPlanet?.img}`} alt="" />
+        <div className="circle-container">
+          <img src={`/planets/${nearestPlanet?.img}`} alt="" />
+        </div>
       </div>
     </LayerGroup>
   );

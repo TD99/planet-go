@@ -18,9 +18,10 @@
 
 .map-arrow {
   position: absolute;
+  top: 0;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-25%);
 
   display: flex;
   justify-content: center;
@@ -34,17 +35,25 @@
   z-index: 10000;
 }
 
-.map-arrow-container > img {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-
+.map-arrow-container > .circle-container > img {
   filter: brightness(40%);
   width: 5rem;
 }
 
-.map-arrow > .icon {
+.map-arrow-container > .circle-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-25%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5.5rem;
+  width: 5.5rem;
+  border-radius: 100%;
+  background-color: #1f1f1f;
 }
 
 .map-arrow-container {
