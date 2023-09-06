@@ -4,7 +4,7 @@ import { getPlanetPositions, kmToLatLong } from "@src/core/solarSystem";
 import { planetsData } from "@src/data/planetData";
 import { Icon, LatLngBoundsExpression } from "leaflet";
 import { arrowUp } from "ionicons/icons";
-import getNetworkTime from "@src/lib/time";
+import { getNetworkTime } from "@src/lib/time";
 import useLocalStorage from "@src/hooks/useLocalStorage";
 import { AppSettings } from "@src/types/interfaces";
 import { useHistory } from "react-router";
